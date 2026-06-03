@@ -42,7 +42,7 @@ export function useDebouncedSave({
       nextValue === lastSavedRef.current;
 
     if (unchanged) {
-      setValue("idle");
+      setStatus("saved");
       return;
     }
 
