@@ -10,6 +10,15 @@ interface UseDebouncedSaveOptions {
   delayMs?: number;
 }
 
+function hash(input: string): number {
+  let h = 5381;
+  for (let i = 0; i < input.length; i++) {
+    h = (h * 33) ^ input.charCodeAt(i);
+  }
+
+  return h >>> 0;
+}
+
 export function useDebouncedSave({
   initialValue,
   onSave,
@@ -19,14 +28,29 @@ export function useDebouncedSave({
   const [status, setStatus] = useState<SaveStatus>("idle");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const lastSavedRef = useRef(initialValue);
+  const lastSavedHashRef = useRef(hash(initialValue));
+
   function change(nextValue: string) {
     setValue(nextValue);
-    setStatus("saving");
 
     if (timerRef.current) clearTimeout(timerRef.current);
 
+    //Skip saving if the content is unchanged from what was last saved
+    const unchanged =
+      hash(nextValue) === lastSavedHashRef.current &&
+      nextValue === lastSavedRef.current;
+
+    if (unchanged) {
+      setStatus("saved");
+      return;
+    }
+
+    setStatus("saving");
     timerRef.current = setTimeout(async () => {
       await onSave(nextValue);
+      lastSavedRef.current = nextValue;
+      lastSavedHashRef.current = hash(nextValue);
       setStatus("saved");
     }, delayMs);
   }
