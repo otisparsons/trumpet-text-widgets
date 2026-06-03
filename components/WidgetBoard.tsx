@@ -22,44 +22,23 @@ export function WidgetBoard({ initialWidgets }: WidgetBoardProps) {
   }
 
   return (
-    <main style={{ maxWidth: 1000, margin: "0 auto", padding: 24 }}>
-      <h1 style={{ fontSize: 24, marginBottom: 24 }}>Text Widgets</h1>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          marginBottom: 32,
-        }}
-      >
+    <main className="mx-auto max-w-5xl p-6">
+      <h1 className="mb-6 text-2xl font-semibold">Text Widgets</h1>
+      <div className="mb-8">
         <button
           onClick={handleAdd}
-          style={{
-            padding: "10px 20px",
-            fontSize: 16,
-            fontWeight: 600,
-            color: "#fff",
-            background: "#000",
-            border: "none",
-            borderRadius: 6,
-            cursor: "pointer",
-          }}
+          className="rounded-md bg-black px-5 py-2.5 font-semibold text-white"
         >
           Add widget
         </button>
       </div>
 
       {widgets.length === 0 ? (
-        <p style={{ color: "#666", textAlign: "center" }}>
+        <p className="text-gray-500">
           No widgets yet. Click "Add widget" to create one.
         </p>
       ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            gap: 16,
-          }}
-        >
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
           {widgets.map((widget) => (
             <TextWidget
               key={widget.id}

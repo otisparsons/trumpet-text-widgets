@@ -9,6 +9,12 @@ interface TextWidgetProps {
   onDelete: (id: string) => void;
 }
 
+const STATUS_LABELS = {
+  saving: "Saving...",
+  saved: "Saved",
+  idle: "",
+} as const;
+
 export function TextWidget({ widget, onDelete }: TextWidgetProps) {
   const { value, status, change, cancelPending } = useDebouncedSave({
     initialValue: widget.text,
@@ -22,40 +28,18 @@ export function TextWidget({ widget, onDelete }: TextWidgetProps) {
   }
 
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        borderRadius: 6,
-        padding: 12,
-        marginBottom: 12,
-      }}
-    >
+    <div className="rounded-md border border-gray-300 p-3">
       <textarea
         value={value}
         onChange={(e) => change(e.target.value)}
         rows={4}
         placeholder="Type your text..."
-        style={{ width: "100%", resize: "vertical", boxSizing: "border-box" }}
+        className="w-full resize-y border-none p-2 text-base focus:outline-none"
         aria-label="Widget text"
       />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: 8,
-          fontSize: 12,
-          color: "666",
-        }}
-      >
-        <span aria-live="polite">
-          {status === "saving"
-            ? "Saving..."
-            : status === "saved"
-              ? "Saved"
-              : ""}
-        </span>
-        <button onClick={handleDelete} aria-label="Delete Widget">
+      <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
+        <span aria-live="polite">{STATUS_LABELS[status]}</span>
+        <button onClick={handleDelete} aria-label="Delete widget">
           Delete
         </button>
       </div>
